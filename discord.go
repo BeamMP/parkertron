@@ -289,7 +289,7 @@ func discordMessageHandler(botSession *session.Session, messageEvent *gateway.Me
 				if len(urlResponse) == 1 && urlResponse[0] == "" || len(urlResponse) == 0 {
 
 				} else {
-					response = append(response, fmt.Sprintf("I have found the following for: <%s>", url))
+					response = append(response, fmt.Sprintf("I have found the following for your image: "))
 					for _, singleLine := range urlResponse {
 						response = append(response, singleLine)
 					}
