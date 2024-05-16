@@ -53,6 +53,15 @@ func readyDiscord(botSession *session.Session, game string) {
 	Log.Debugf("set game to: %s", game)
 }
 
+func containsRoleId(s []discord.RoleID, e discord.RoleID) bool {
+    for _, a := range s {
+        if a == e {
+            return true
+        }
+    }
+    return false
+}
+
 // This function will be called (due to AddHandler) every time a new
 // message is created on any channel that the authenticated bot has access to.
 func discordMessageHandler(botSession *session.Session, messageEvent *gateway.MessageCreateEvent, botName string) {
@@ -72,6 +81,13 @@ func discordMessageHandler(botSession *session.Session, messageEvent *gateway.Me
 	// Ignore all messages created by bots (stops the bot uprising)
 	if messageEvent.Author.Bot {
 		Log.Debug("User is a bot and being ignored.")
+		return
+	}
+
+	member, err := botSession.Member(messageEvent.GuildID, messageEvent.Author.ID)
+
+	if err == nil && containsRoleId(member.RoleIDs, 1181529913250025542) {
+		Log.Info("Ignoring message from staff.")
 		return
 	}
 
