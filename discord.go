@@ -308,9 +308,15 @@ func discordMessageHandler(botSession *session.Session, messageEvent *gateway.Me
 				if len(urlResponse) == 1 && urlResponse[0] == "" || len(urlResponse) == 0 {
 
 				} else {
-					response = append(response, fmt.Sprintf("I have found the following for your image: "))
+					imgResponse := make([]string, 1)
 					for _, singleLine := range urlResponse {
-						response = append(response, singleLine)
+						if !contains(response, singleLine) {
+							imgResponse = append(imgResponse, singleLine)
+						}
+					}
+					if len(imgResponse) > 0 {
+						response = append(response, fmt.Sprintf("I have found the following for your image: "))
+						response = append(response, imgResponse...)
 					}
 				}
 			}
