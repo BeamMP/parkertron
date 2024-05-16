@@ -13,9 +13,10 @@ type discordBot struct {
 }
 
 type discordBotConfig struct {
-	Token  string        `json:"token,omitempty"`
-	Game   string        `json:"game,omitempty"`
-	DMResp responseArray `json:"dm_response,omitempty"`
+	Token         string        `json:"token,omitempty"`
+	Game          string        `json:"game,omitempty"`
+	DMResp        responseArray `json:"dm_response,omitempty"`
+	IgnoreRoleIDs []uint64      `json:"ignore_role_ids,omitempty"`
 }
 
 type discordServer struct {

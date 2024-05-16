@@ -24,6 +24,8 @@ var (
 	discordGlobal discordBase
 
 	discordLoad = make(chan string)
+	
+	ignoreRoleIDs = make([]discord.RoleID, 0)
 )
 
 // This function will be called (due to AddHandler) when the bot receives
@@ -85,10 +87,11 @@ func discordMessageHandler(botSession *session.Session, messageEvent *gateway.Me
 	}
 
 	member, err := botSession.Member(messageEvent.GuildID, messageEvent.Author.ID)
-
-	if err == nil && containsRoleId(member.RoleIDs, 1181529913250025542) {
-		Log.Info("Ignoring message from staff.")
-		return
+	for _, roleId := range ignoreRoleIDs {
+		if err == nil && containsRoleId(member.RoleIDs, roleId) {
+			Log.Infof("Ignoring message from staff due to role %d", roleId)
+			return
+		}
 	}
 
 	// get channel information
@@ -497,6 +500,11 @@ func startDiscordBotConnection(discordConfig discordBot) {
 	// Create a new Discord session using the provided bot token.
 	Log.Debugf("using token '%s' to auth", discordConfig.Config.Token)
 	botSession := session.New("Bot " + discordConfig.Config.Token)
+
+	for _, elem := range discordConfig.Config.IgnoreRoleIDs {
+		Log.Infof("ignoring discord role %d", elem)
+		ignoreRoleIDs = append(ignoreRoleIDs, discord.RoleID(elem))
+	}
 
 	// Add Gateway Intents
 	botSession.AddIntents(gateway.IntentGuildMessages)
