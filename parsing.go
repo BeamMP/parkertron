@@ -11,6 +11,9 @@ import (
 	"strconv"
 	"strings"
 
+	_ "image/png"
+	_ "image/jpeg"
+
 	"github.com/h2non/filetype"
 	gosseract "github.com/otiai10/gosseract/v2"
 )
