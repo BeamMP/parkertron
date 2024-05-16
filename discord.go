@@ -308,7 +308,7 @@ func discordMessageHandler(botSession *session.Session, messageEvent *gateway.Me
 				if len(urlResponse) == 1 && urlResponse[0] == "" || len(urlResponse) == 0 {
 
 				} else {
-					imgResponse := make([]string, 1)
+					imgResponse := make([]string, 0)
 					for _, singleLine := range urlResponse {
 						if !contains(response, singleLine) {
 							imgResponse = append(imgResponse, singleLine)
