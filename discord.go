@@ -316,9 +316,9 @@ func discordMessageHandler(botSession *session.Session, messageEvent *gateway.Me
 					}
 					if len(imgResponse) > 0 {
 						if len(response) > 0 {
-							response = append(response, fmt.Sprintf("\nAnd I have found the following for your image: "))
+							response = append(response, fmt.Sprintf("\nAnd I have found the following for your image:\n"))
 						} else {
-							response = append(response, fmt.Sprintf("I have found the following for your image: "))
+							response = append(response, fmt.Sprintf("I have found the following for your image:\n"))
 						}
 						response = append(response, imgResponse...)
 					}
