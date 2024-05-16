@@ -99,7 +99,7 @@ func discordMessageHandler(botSession *session.Session, messageEvent *gateway.Me
 	// if the channel is a DM
 	if channel.Type == 1 {
 		_, dmResp := getMentions("discord", botName, guildID, "DirectMessage")
-		if err := sendDiscordMessage(botSession, channel, messageEvent.Author, dmResp.Reaction, botName); err != nil {
+		if err := sendDiscordMessage(botSession, message.ID, channel, messageEvent.Author, dmResp.Reaction, botName); err != nil {
 			Log.Error(err)
 		}
 
@@ -125,7 +125,7 @@ func discordMessageHandler(botSession *session.Session, messageEvent *gateway.Me
 					Log.Error(err)
 				}
 
-				if err := sendDiscordMessage(botSession, channel, messageEvent.Author, filter.Reason, botName); err != nil {
+				if err := sendDiscordMessage(botSession, message.ID, channel, messageEvent.Author, filter.Reason, botName); err != nil {
 					Log.Error(err)
 				}
 				return
@@ -261,7 +261,7 @@ func discordMessageHandler(botSession *session.Session, messageEvent *gateway.Me
 			Log.Debugf("no URLs to read")
 		} else if len(allURLS) > maxLogs {
 			Log.Debug("too many logs or screenshots to try and read.")
-			if err := sendDiscordMessage(botSession, channel, messageEvent.Author, logResponse, botName); err != nil {
+			if err := sendDiscordMessage(botSession, message.ID, channel, messageEvent.Author, logResponse, botName); err != nil {
 				Log.Error(err)
 			}
 			if err := sendDiscordReaction(botSession, channel, message, logReaction); err != nil {
@@ -300,7 +300,7 @@ func discordMessageHandler(botSession *session.Session, messageEvent *gateway.Me
 
 	// send response to channel
 	Log.Debugf("sending response %s to %s", response, chanID)
-	if err := sendDiscordMessage(botSession, channel, messageEvent.Author, response, botName); err != nil {
+	if err := sendDiscordMessage(botSession, message.ID, channel, messageEvent.Author, response, botName); err != nil {
 		Log.Error(err)
 	}
 
@@ -372,7 +372,7 @@ func deleteDiscordMessages(botSession *session.Session, channel *discord.Channel
 }
 
 // send message handling
-func sendDiscordMessage(botSession *session.Session, channel *discord.Channel, author discord.User, responseArray []string, botName string) (err error) {
+func sendDiscordMessage(botSession *session.Session, msgID discord.MessageID, channel *discord.Channel, author discord.User, responseArray []string, botName string) (err error) {
 	// if there is no response to send just return
 	if len(responseArray) == 0 {
 		return
@@ -386,7 +386,7 @@ func sendDiscordMessage(botSession *session.Session, channel *discord.Channel, a
 	response = strings.Replace(response, "&react&", "", -1)
 
 	// if there is an error return the error
-	if _, err = botSession.SendMessage(channel.ID, response); err != nil {
+	if _, err = botSession.SendMessageReply(channel.ID, response, msgID); err != nil {
 		return
 	}
 
